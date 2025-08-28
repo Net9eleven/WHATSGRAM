@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  coturn:
+    image: instrumentisto/coturn
+    restart: unless-stopped
+    environment:
+      - TURN_REALM=example.com
+      - LISTENING_PORT=3478
+      - RELAY_IP=auto
+      - MIN_PORT=49152
+      - MAX_PORT=49200
+    network_mode: host
+
+  livekit:
+    image: livekit/livekit-server:latest
+    restart: unless-stopped
+    command: >
+      --keys devkey:devsecret
+      --bind 0.0.0.0
+      --rtc.tcp-port 7881
+      --rtc.udp-port 7882
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
